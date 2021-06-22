@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<!--
+    Licensed to the Apache Software Foundation (ASF) under one
+    or more contributor license agreements.  See the NOTICE file
+    distributed with this work for additional information
+    regarding copyright ownership.  The ASF licenses this file
+    to you under the Apache License, Version 2.0 (the
+    "License"); you may not use this file except in compliance
+    with the License.  You may obtain a copy of the License at
+
+    http://www.apache.org/licenses/LICENSE-2.0
+
+    Unless required by applicable law or agreed to in writing,
+    software distributed under the License is distributed on an
+    "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+     KIND, either express or implied.  See the License for the
+    specific language governing permissions and limitations
+    under the License.
+-->
+<html>
+    <head>
+        <!--
+        Customize this policy to fit your own app's needs. For more guidance, see:
+            https://github.com/apache/cordova-plugin-whitelist/blob/master/README.md#content-security-policy
+        Some notes:
+            * gap: is required only on iOS (when using UIWebView) and is needed for JS->native communication
+            * https://ssl.gstatic.com is required only on Android and is needed for TalkBack to function properly
+            * Disables use of inline scripts in order to mitigate risk of XSS vulnerabilities. To change this:
+                * Enable inline JS: add 'unsafe-inline' to default-src
+        -->
+		<!-- <meta http-equiv="Content-Security-Policy" content="default-src 'self' 'unsafe-inline' data: gap: https://ssl.gstatic.com 'unsafe-eval'; style-src 'self' 'unsafe-inline'; media-src *; img-src 'self' data: content:;"> -->
+		<meta http-equiv="Content-Security-Policy" content="default-src *; style-src 'self' 'unsafe-inline'; script-src 'self' 'unsafe-inline' 'unsafe-eval'">
+
+        <meta name="format-detection" content="telephone=no">
+        <meta name="msapplication-tap-highlight" content="no">
+        <meta name="viewport" content="initial-scale=1, width=device-width, viewport-fit=cover">
+		<!-- CSS: Main -->
+		<link rel="stylesheet" type="text/css" href="css/bootstrap.min.css"/>
+
+		<link rel="stylesheet" type="text/css" href="css/custom.css" />
+
+		<!-- JS: Main -->
+		<script type="text/javascript" src="js/jquery-3.3.1.min.js"></script>
+		<script type="text/javascript" src="js/popper-1.14.3.min.js"></script>
+		<script type="text/javascript" src="js/bootstrap.min.js"></script>
+
+        <title>Hilfe - PDFisierung</title>
+    </head>
+	<body>
+		<header>
+			<!-- Fixed navbar -->
+			<nav class="navbar navbar-expand-md navbar-dark fixed-top bg-dark bg-dark-pol">
+				<a class="navbar-brand" href="index.html"><img src="img/pdfisierung-icon-64.png" style="width:32px; height: 32px;" /> PDFisierung</a>
+				<button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarCollapse" aria-controls="navbarCollapse" aria-expanded="false" aria-label="Toggle navigation">
+				<span class="navbar-toggler-icon"></span>
+				</button>
+				<div class="collapse navbar-collapse" id="navbarCollapse">
+					<ul class="navbar-nav mr-auto">
+						<li class="nav-item"><a class="nav-link" href="index.html">Neue PDF</a></li>
+						<li class="nav-item"><a class="nav-link" href="list.html">Liste</a></li>
+						<li class="nav-item active"><a class="nav-link" href="hilfe.html">Hilfe</a></li>
+						<li class="nav-item"><a class="nav-link" href="#" id="navMenuLogout">Abmelden</a></li>
+					</ul>
+				</div>
+			</nav>
+		</header>
+		<!-- Begin page content -->
+		
+		<main role="main" class="container">
+			<h2 class="mt-5" style="text-align:center;">Hilfe</h2>
+			<h3>Allgemein</h3>
+			<div class="row m-3">Die App PDFisierung dient der kurzfristigen Zwischenspeicherung des Vernehmungsprotokolls (PDF) zur Übergabe an das System POLIKS. In der Liste werden ausschließlich die eigenen PDF-Dateien aufgeführt.</div>
+			<h3>Vorgehensweise</h3>
+			<div class="row m-3">Nachdem die Vernehmung durchgeführt und am Tablet digital protokolliert wurde (WPS Office), wird diese im Anschluss als PDF gespeichert. Darauf folgend kann die PDF-Datei mit Hilfe dieser App temporär auf einem Server zwischengespeichert und automatisiert mit einer Prüfsumme versehen werden (PDF-Upload). Im Anschluss kann von einem MAP-PC die Übernahme in POLIKS erfolgen, nachdem die PDF im Browser heruntergeladen wurde (Adresse: xyz.int.polizei.berlin.de).</div>
+		</main>
+	
+		<footer class="footer bg-dark bg-dark-pol">
+			<div class="container">
+				<span class="text-muted footerVersion">Version: 0.3.0</span>
+			</div>
+		</footer>
+		<div class="ajax-loader d-none" id="ajax-loader"></div>
+	
+	    <script type="text/javascript" src="cordova.js"></script>
+		<script type="text/javascript" src="js/index.js"></script>
+		<script type="text/javascript">
+		//
+		</script>
+    </body>
+</html>

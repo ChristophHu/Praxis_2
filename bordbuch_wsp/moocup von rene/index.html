@@ -1,0 +1,332 @@
+<!DOCTYPE html>
+<html lang="de">
+    <head>
+		<meta charset="utf-8" />
+        <!--
+        Customize this policy to fit your own app's needs. For more guidance, see:
+            https://github.com/apache/cordova-plugin-whitelist/blob/master/README.md#content-security-policy
+        Some notes:
+            * gap: is required only on iOS (when using UIWebView) and is needed for JS->native communication
+            * https://ssl.gstatic.com is required only on Android and is needed for TalkBack to function properly
+            * Disables use of inline scripts in order to mitigate risk of XSS vulnerabilities. To change this:
+                * Enable inline JS: add 'unsafe-inline' to default-src
+        -->
+		<meta http-equiv="Content-Security-Policy" content="default-src 'self' 'unsafe-inline' data: gap: https://ssl.gstatic.com 'unsafe-eval'; style-src 'self' 'unsafe-inline'; media-src *; img-src * data: content:;">
+		<!-- <meta http-equiv="Content-Security-Policy" content="default-src *; style-src 'self' 'unsafe-inline'; script-src 'self' 'unsafe-inline' 'unsafe-eval'"> -->
+        <meta name="format-detection" content="telephone=no"> 
+        <meta name="msapplication-tap-highlight" content="no">
+		<meta name="viewport" content="initial-scale=1, width=device-width, viewport-fit=cover">
+
+		<!-- CSS: Main -->
+		<link rel="stylesheet" type="text/css" href="css/bootstrap.min.css"/>
+
+		<!-- CSS: Datatables -->
+		<link rel="stylesheet" type="text/css" href="css/dataTables.bootstrap4.min.css"/>
+		<link rel="stylesheet" type="text/css" href="css/buttons.bootstrap4.min.css"/>
+		<link rel="stylesheet" type="text/css" href="css/responsive.bootstrap4.min.css"/>
+		<link rel="stylesheet" type="text/css" href="css/custom.css" />
+		<!-- CSS: Karte -->
+		<link rel="stylesheet" type="text/css" href="css/leaflet.css" />
+
+		<!-- JS: Main -->
+		<script type="text/javascript" src="js/jquery-3.3.1.min.js"></script>
+		<script type="text/javascript" src="js/popper-1.14.3.min.js"></script>
+		<script type="text/javascript" src="js/bootstrap.min.js"></script>
+		<!-- JS: Datatables -->
+		<script type="text/javascript" src="js/jquery.dataTables.min.js"></script>
+		<script type="text/javascript" src="js/dataTables.bootstrap4.min.js"></script>
+		<script type="text/javascript" src="js/dataTables.responsive.min.js"></script>
+		<script type="text/javascript" src="js/responsive.bootstrap4.min.js"></script>
+		<script type="text/javascript" src="js/dataTables.buttons.min.js"></script>
+		<script type="text/javascript" src="js/buttons.bootstrap4.min.js"></script>
+
+		<!-- JS: Karte -->
+		<script src="js/leaflet.js"></script>
+
+        <title>Bordbuch</title>
+    </head>
+	<body onLoad="onDeviceReady();">
+		<header>
+			<!-- Fixed navbar -->
+			<nav class="navbar navbar-expand-md navbar-dark fixed-top bg-dark" style="background-color: #111838 !important;">
+				<a class="navbar-brand" href="index.html"><img src="img/ship-w-512.png" style="width:32px; height: 32px;" /> Bordbuch</a>
+				<button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarCollapse" aria-controls="navbarCollapse" aria-expanded="false" aria-label="Toggle navigation">
+					<span class="navbar-toggler-icon" style="color: white !important;"></span>
+				</button>
+				<div class="collapse navbar-collapse navbar-collapse-pol" id="navbarCollapse">
+					<hr style="width: 100%; color: white; height: 1px; background-color: white;">
+					<ul id="navitemtop" class="navbar-nav mr-auto">
+						<li class="nav-item nav-link nav-link-pol"><span id="navitemtop_bordbuchwahl">Bordbuchwahl</span></li>
+						<li class="nav-item nav-link nav-link-pol"><span id="navitemtop_zweck">Zweck der Fahrt</span></li>
+						<li class="nav-item nav-link nav-link-pol"><span id="navitemtop_besatzung">Besatzung</span></li>
+						<li class="nav-item nav-link nav-link-pol"><span id="navitemtop_eingaben">Eingaben</span></li>
+						<li class="nav-item nav-link nav-link-pol"><span id="navitemtop_maengel">Mängel</span></li>
+						<li class="nav-item nav-link nav-link-pol"><span id="navitemtop_hinweise">Hinweise</span></li>
+						<li class="nav-item nav-link nav-link-pol"><span id="navitemtop_map">Fahrtverlauf</span></li>
+						<li class="nav-item nav-link nav-link-pol mt-2"><span id="navitemtop_archiv">Archiv</span></li>
+						<li class="nav-item nav-link nav-link-pol"><span id="navitemtop_about">Info</span></li>
+					</ul>
+				</div>
+			</nav>
+		</header>
+		<!-- Begin page content -->
+
+		<main role="main" class="container">
+
+			<!-- Page start: login -->
+			<div id="page_view_login" class="d-none">
+				<h2 class="mt-5" style="text-align:center;">Anmeldung</h2>
+				<div class="row mx-3">Bitte melden Sie sich mit Ihrer Personalnummer und dazugehörigem MAP-Passwort an.</div>
+				<form class="m-3">
+					<div class="form-group">
+						<label for="login_form_input_username">PersonalNr</label>
+						<input type="number" class="form-control" id="login_form_input_username" name="login_form_input_username" min="24000000" max="99999999">
+						<!-- <input type="text" class="form-control" id="login_form_input_username" name="login_form_input_username" required> -->
+					</div>
+					<div class="form-group">
+						<label for="login_form_input_password">MAP-Passwort</label>
+						<div class="input-group">
+							<input type="password" class="form-control" id="login_form_input_password" name="login_form_input_password" required>
+							<div class="input-group-append">
+								<img class="input-group-text" id="login_form_input_password_toggle" src="img/icon-eye.svg">
+							</div>
+						</div>
+					</div>
+				</form>
+
+				<nav class="navbar navbar-expand-sm bg-light justify-content-center fixed-bottom navbarbottom">
+					<button id="login_button_submit" class="btn btn-warning" type="button">anmelden</button>
+				</nav>
+			</div>
+			<!-- Page end: login -->
+
+			<!-- Page start: Ship Choice -->
+			<div id="page_view_ship_qrcode" class="d-none">
+				<h2 class="mt-5" style="text-align:center;">Bordbuchwahl</h2>
+				<div class="row mx-3">Bitte wählen Sie nun das Bordbuch aus. Nutzen Sie hierfür einen QR-Code oder treffen Sie in der Liste eine Auswahl.</div>
+				<form class="m-3">
+					<div class="row mt-3">
+						<div class="col text-center">
+							<button type="button" id="ship_qrcode_button" class="btn btn-warning btn">QR-Code scannen</button>
+						</div>
+					</div>
+					<div class="form-group">
+						<label for="ship_form_input_ship">Liste</label>
+						<select class="form-control" id="ship_qrcode_form_input_ship">
+							<option value="">--auswählen--</option>
+							<option value="WSP 10">WSP 10</option>
+							<option value="WSP 12">WSP 12</option>
+							<option value="WSP 14">WSP 14</option>
+							<option value="WSP 15">WSP 15</option>
+							<option value="WSP 16">WSP 16</option>
+							<option value="WSP 20">WSP 20</option>
+							<option value="WSP 21">WSP 21</option>
+						</select>
+					</div>
+				</form>
+
+				<nav class="navbar navbar-expand-sm bg-light justify-content-center fixed-bottom navbarbottom">
+					<button id="ship_qrcode_button_back" class="btn btn-secondary mr-2" type="button">zurück</button>
+					<button id="ship_qrcode_button_submit" class="btn btn-warning ml-2" type="button">weiter</button>
+				</nav>
+			</div>
+			<!-- Page end: Ship Choice -->
+
+
+			<!-- Page start: Zweck der Fahrt -->
+			<div id="page_view_zweck" class="d-none">
+				<div class="pb-5">
+					<h2 class="mt-5" style="text-align:center;">Zweck der Fahrt</h2>
+					<div class="row mx-3">Bitte wählen Sie aus der Liste den Zweck der Fahrt aus.</div>
+					<div class="form-group">
+						<select class="form-control" id="zweck_der_fahrt">
+							<option value="">--auswählen--</option>
+							<option>Streife</option>
+							<option>Überführung</option>
+							<option>Probefahrt</option>
+						</select>
+					</div>
+				</div>
+
+				<nav class="navbar navbar-expand-sm bg-light justify-content-center fixed-bottom navbarbottom">
+					<button id="zweck_button_back" class="btn btn-secondary mr-2" type="button">zurück</button>
+					<button id="zweck_button_submit" class="btn btn-warning ml-2" type="button">weiter</button>
+				</nav>
+			</div>
+			<!-- Page end: Zweck der Fahrt -->
+
+
+			<!-- Page start: Crew -->
+			<div id="page_view_crew" class="d-none">
+				<div class="pb-5">
+					<h2 class="mt-5" style="text-align:center;">Besatzung</h2>
+					<div class="form-group">
+						<label for="inputGroupPers">Bootsführer</label>
+						<input type="number" class="form-control" id="inputGroupPers" placeholder="24123456" disabled>
+					</div>
+					<div id="crew_list"></div>
+					
+					<div class="row mt-3">
+						<div class="col text-center">
+							<button type="button" id="crew_add" class="btn btn-warning btn-sm">Person hinzufügen</button>
+						</div>
+					</div>
+				</div>
+
+				<nav class="navbar navbar-expand-sm bg-light justify-content-center fixed-bottom navbarbottom">
+					<button id="crew_button_back" class="btn btn-secondary mr-2" type="button">zurück</button>
+					<button id="crew_button_submit" class="btn btn-warning ml-2" type="button">weiter</button>
+				</nav>
+			</div>
+			<!-- Page end: Crew -->
+
+
+			<!-- Page start: Eingaben -->
+			<div id="page_view_eingaben" class="d-none">
+				<div class="pb-5">
+					<h2 class="mt-5" style="text-align:center;">Eingaben</h2>
+					<div class="form-group">
+						<label for="inputEingabenBetriebsstunden">Betriebsstunden</label>
+						<input type="number" class="form-control" id="inputEingabenBetriebsstunden" placeholder="45748,6">
+					</div>
+					<div class="row">&nbsp;&nbsp;&nbsp;Vollständigkeit Betriebsmittel</div>
+					<div class="form-check">
+						<input class="form-check-input" type="checkbox" value="" id="inputEingabeCheck1">
+						<label class="form-check-label" for="inputEingabeCheck1">
+							Betriebsmittel 1
+						</label>
+					</div>
+					<div class="form-check">
+						<input class="form-check-input" type="checkbox" value="" id="inputEingabeCheck2">
+						<label class="form-check-label" for="inputEingabeCheck2">
+							Betriebsmittel 2
+						</label>
+					</div>
+					<div class="form-check">
+						<input class="form-check-input" type="checkbox" value="" id="inputEingabeCheck3">
+						<label class="form-check-label" for="inputEingabeCheck3">
+							Betriebsmittel 3
+						</label>
+					</div>
+					<div class="form-check">
+						<input class="form-check-input" type="checkbox" value="" id="inputEingabeCheck4">
+						<label class="form-check-label" for="inputEingabeCheck4">
+							Betriebsmittel 4
+						</label>
+					</div>
+					<div class="form-check">
+						<input class="form-check-input" type="checkbox" value="" id="inputEingabeCheck5">
+						<label class="form-check-label" for="inputEingabeCheck5">
+							Betriebsmittel 5
+						</label>
+					</div>					
+				</div>
+
+				<nav class="navbar navbar-expand-sm bg-light justify-content-center fixed-bottom navbarbottom">
+					<button id="eingaben_button_back" class="btn btn-secondary mr-2" type="button">zurück</button>
+					<button id="eingaben_button_submit" class="btn btn-warning ml-2" type="button">weiter</button>
+				</nav>
+			</div>
+			<!-- Page end: Eingaben -->
+
+
+			<!-- Page start: Mängel -->
+			<div id="page_view_maengel" class="d-none">
+				<div class="pb-5">
+					<h2 class="mt-5" style="text-align:center;">Mängel</h2>
+					<div class="row mx-3">Auflistung von Mängeln:</div>
+					<div class="form-group">
+						<textarea class="form-control" id="inputEingabeMaengel" rows="5"></textarea>
+					</div>
+					<div class="row mt-3">
+						<div class="col text-center">
+							<button type="button" id="accordion_maengel_photo_add" class="btn btn-warning btn-sm">Foto aufnehmen</button>
+						</div>
+					</div>
+				</div>
+
+				<nav class="navbar navbar-expand-sm bg-light justify-content-center fixed-bottom navbarbottom">
+					<button id="maengel_button_back" class="btn btn-secondary mr-2" type="button">zurück</button>
+					<button id="maengel_button_submit" class="btn btn-warning ml-2" type="button">weiter</button>
+				</nav>
+			</div>
+			<!-- Page end: Mängel -->
+
+
+			<!-- Page start: Hinweise -->
+			<div id="page_view_hinweise" class="d-none">
+				<div class="pb-5">
+					<h2 class="mt-5" style="text-align:center;">Hinweise</h2>
+					<div class="row mx-3">Hinweise hinzufügen:</div>
+					<div class="form-group">
+						<textarea class="form-control" id="inputEingabeHinweise" rows="5"></textarea>
+					</div>
+					<div class="row mt-3">
+						<div class="col text-center">
+							<button type="button" id="accordion_hinweise_photo_add" class="btn btn-warning btn-sm">Foto aufnehmen</button>
+						</div>
+					</div>
+				</div>
+
+				<nav class="navbar navbar-expand-sm bg-light justify-content-center fixed-bottom navbarbottom">
+					<button id="hinweise_button_back" class="btn btn-secondary mr-2" type="button">zurück</button>
+					<button id="hinweise_button_submit" class="btn btn-warning ml-2" type="button">weiter</button>
+				</nav>
+			</div>
+			<!-- Page end: Hinweise -->
+
+
+			<!-- Page start: Fahrtverlauf -->
+			<div id="page_view_map" class="d-none">
+				<div class="pb-5">
+					<h2 class="mt-5" style="text-align:center;">Fahrtverlauf</h2>
+					<div id="map"></div>
+					<div class="col text-center fixed-bottom pb-5 mb-3">
+						<button id="map_button_startend" class="btn btn-warning" type="button">Fahrt beginnen</button>
+					</div>
+				</div>
+
+
+				<nav class="navbar navbar-expand-sm bg-light justify-content-center fixed-bottom navbarbottom">
+					<button id="map_button_back" class="btn btn-secondary mr-2" type="button">zurück</button>
+					<!-- <button id="map_button_submit" class="btn btn-warning ml-2" type="button">Fahrt beenden</button> -->
+				</nav>
+			</div>
+			<!-- Page end: Fahrtverlauf -->
+
+
+			<!-- Page start: Info -->
+			<div id="page_view_info" class="d-none">
+				<div class="pb-5">
+					<h2 class="mt-5" style="text-align:center;">Informationen</h2>
+					<div class="row mx-3">
+						<p>
+							Herausgeber:<br />
+							Der Polizeipräsident in Berlin<br />
+							DIR ZS IKT PG MIKT<br />
+							Platz der Luftbrücke 6<br />
+							12101 Berlin<brr />
+						</p>
+						<p>App-Version: 0.0.1</p>
+					</div>
+				</div>
+
+				<nav class="navbar navbar-expand-sm bg-light justify-content-center fixed-bottom navbarbottom">
+					<button id="info_button_back" class="btn btn-secondary mr-2" type="button">zurück</button>
+					<button id="info_button_submit" class="btn btn-warning ml-2" type="button">weiter</button>
+				</nav>
+			</div>
+			<!-- Page end: Info -->
+
+
+		</main>
+
+		<div class="ajax-loader d-none" id="ajax-loader"></div>
+	
+	    <script type="text/javascript" src="cordova.js"></script>
+		<script type="text/javascript" src="js/index.js"></script>
+		<script type="text/javascript">
+
+		</script>
+    </body>
+</html>
