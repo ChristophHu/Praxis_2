@@ -1,0 +1,14 @@
+body {
+    background-color: gray;
+}
+
+.container {
+    background-color: lightgray;
+    width: 600px;
+    height: 100%;
+    margin: 20 auto;
+}
+
+.btn {
+    background-color: green;
+}
